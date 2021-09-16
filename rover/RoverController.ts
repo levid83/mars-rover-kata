@@ -1,10 +1,11 @@
-import Rover from "./Rover";
+import Rover, { Direction } from "./Rover";
 import {
   RotateLeft,
   RotateRight,
   MoveForWard,
   MoveBackwards,
 } from "./Commands";
+import { Position } from "./Types";
 
 enum Rotation {
   LEFT = "L",
@@ -21,13 +22,24 @@ enum Move {
 export class RoverController {
   constructor(private rover: Rover) {}
 
+  private formatResponse(
+    pos: Position,
+    dir: Direction,
+    isBlocked: boolean
+  ): string {
+    return `(${pos.x}, ${pos.y}) ${dir}${isBlocked ? " STOPPED" : ""}`;
+  }
+
   public execute(command: string): string {
     for (let i = 0; i < command.length; i++) {
       this.commandFactory(command[i]).execute();
+      if (this.rover.getIsBlocked()) break;
     }
-    return `(${this.rover.getPosition().x}, ${
-      this.rover.getPosition().y
-    }) ${this.rover.getDirection()}`;
+    return this.formatResponse(
+      this.rover.getPosition(),
+      this.rover.getDirection(),
+      this.rover.getIsBlocked()
+    );
   }
   private commandFactory(code: string) {
     switch (code) {

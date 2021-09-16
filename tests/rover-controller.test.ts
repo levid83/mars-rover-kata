@@ -1,3 +1,4 @@
+import Obstacles from "../rover/Obstacles";
 import Rover, { Direction } from "../rover/Rover";
 import { RoverController } from "../rover/RoverController";
 
@@ -55,5 +56,59 @@ describe("test Rover Controller", () => {
     const controller = new RoverController(rover);
 
     expect(controller.execute("BLLLFLFR")).toBe("(1, 0) EAST");
+  });
+
+  it("it should return the position of the rover in case an obstacle is met in x direction moving forward", () => {
+    const obstacles = new Obstacles([[1, 0]]);
+
+    const rover = new Rover(0, 0, Direction.EAST, obstacles);
+    const controller = new RoverController(rover);
+
+    expect(controller.execute("F")).toBe("(0, 0) EAST STOPPED");
+  });
+
+  it("it should return the position of the rover in case an obstacle is met in y direction moving forward", () => {
+    const obstacles = new Obstacles([[0, 1]]);
+
+    const rover = new Rover(0, 0, Direction.NORTH, obstacles);
+    const controller = new RoverController(rover);
+
+    expect(controller.execute("F")).toBe("(0, 0) NORTH STOPPED");
+  });
+
+  it("it should return the position of the rover in case an obstacle is met in y direction moving backwards", () => {
+    const obstacles = new Obstacles([[0, 0]]);
+
+    const rover = new Rover(0, 1, Direction.NORTH, obstacles);
+    const controller = new RoverController(rover);
+
+    expect(controller.execute("B")).toBe("(0, 1) NORTH STOPPED");
+  });
+
+  it("it should return the position of the rover in case an obstacle is met in x direction moving backwards", () => {
+    const obstacles = new Obstacles([[0, 0]]);
+
+    const rover = new Rover(1, 0, Direction.EAST, obstacles);
+    const controller = new RoverController(rover);
+
+    expect(controller.execute("B")).toBe("(1, 0) EAST STOPPED");
+  });
+
+  it("it should return the position of the rover in case an obstacle is met in x direction moving backwards", () => {
+    const obstacles = new Obstacles([[1, 0]]);
+
+    const rover = new Rover(2, 0, Direction.EAST, obstacles);
+    const controller = new RoverController(rover);
+
+    expect(controller.execute("BLB")).toBe("(2, 0) EAST STOPPED");
+  });
+
+  it("it should return the position of the rover in case an obstacle is met in x direction moving backwards", () => {
+    const obstacles = new Obstacles([[1, 0]]);
+
+    const rover = new Rover(3, 0, Direction.EAST, obstacles);
+    const controller = new RoverController(rover);
+
+    expect(controller.execute("BBLB")).toBe("(2, 0) EAST STOPPED");
   });
 });

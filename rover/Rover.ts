@@ -1,3 +1,6 @@
+import Obstacles from "./Obstacles";
+import { Position } from "./Types";
+
 /** possible directions of the rover */
 export enum Direction {
   NORTH = "NORTH",
@@ -6,15 +9,16 @@ export enum Direction {
   WEST = "WEST",
 }
 
-type Position = {
-  x: number;
-  y: number;
-};
-
 /** Represents the rover with it's state and actions */
 export default class Rover {
   private position: Position;
-  constructor(x: number, y: number, private direction: Direction) {
+  private isBlocked: boolean = false;
+  constructor(
+    x: number,
+    y: number,
+    private direction: Direction,
+    private obstacles?: Obstacles
+  ) {
     this.position = { x, y };
   }
 
@@ -58,6 +62,7 @@ export default class Rover {
 
   moveForward(): void {
     let { x, y } = this.position;
+
     switch (this.direction) {
       case Direction.NORTH:
         y++;
@@ -72,6 +77,11 @@ export default class Rover {
         x--;
         break;
     }
+    if (this.obstacles?.checkObstacle({ x, y })) {
+      this.isBlocked = true;
+      return;
+    }
+
     this.position = { x, y };
   }
 
@@ -91,6 +101,10 @@ export default class Rover {
         x++;
         break;
     }
+    if (this.obstacles?.checkObstacle({ x, y })) {
+      this.isBlocked = true;
+      return;
+    }
     this.position = { x, y };
   }
 
@@ -99,5 +113,8 @@ export default class Rover {
   }
   getDirection(): Direction {
     return this.direction;
+  }
+  getIsBlocked(): boolean {
+    return this.isBlocked;
   }
 }

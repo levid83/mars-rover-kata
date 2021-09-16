@@ -1,3 +1,4 @@
+import Obstacles from "../rover/Obstacles";
 import Rover, { Direction } from "../rover/Rover";
 
 describe("test Rover", () => {
@@ -104,5 +105,45 @@ describe("test Rover", () => {
     rover.moveBackwards();
     expect(rover.getDirection()).toBe(Direction.EAST);
     expect(rover.getPosition()).toStrictEqual({ x: -1, y: 0 });
+  });
+
+  it("can have an obstacle param", () => {
+    const obstacles = new Obstacles([
+      [1, 2],
+      [2, 3],
+    ]);
+    const rover = new Rover(0, 0, Direction.NORTH, obstacles);
+  });
+
+  it("shouldn't go to a position with obstacle in y direction", () => {
+    const obstacles = new Obstacles([[0, 1]]);
+    const rover = new Rover(0, 0, Direction.NORTH, obstacles);
+
+    rover.moveForward();
+    expect(rover.getPosition()).toStrictEqual({ x: 0, y: 0 });
+  });
+
+  it("shouldn't go to a position with obstacle  x direction", () => {
+    const obstacles = new Obstacles([[1, 0]]);
+    const rover = new Rover(0, 0, Direction.EAST, obstacles);
+
+    rover.moveForward();
+    expect(rover.getPosition()).toStrictEqual({ x: 0, y: 0 });
+  });
+
+  it("shouldn't go to a position with obstacle  x direction", () => {
+    const obstacles = new Obstacles([[0, 0]]);
+    const rover = new Rover(1, 0, Direction.EAST, obstacles);
+
+    rover.moveBackwards();
+    expect(rover.getPosition()).toStrictEqual({ x: 1, y: 0 });
+  });
+
+  it("shouldn't go to a position with obstacle  y direction", () => {
+    const obstacles = new Obstacles([[0, 0]]);
+    const rover = new Rover(0, 1, Direction.NORTH, obstacles);
+
+    rover.moveBackwards();
+    expect(rover.getPosition()).toStrictEqual({ x: 0, y: 1 });
   });
 });
